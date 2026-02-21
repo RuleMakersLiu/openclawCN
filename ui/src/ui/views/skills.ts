@@ -1,8 +1,7 @@
+import { t } from "../../i18n/index.ts";
 import { html, nothing } from "lit";
 import type { SkillMessageMap } from "../controllers/skills.ts";
-import type { SkillStatusEntry, SkillStatusReport } from "../types.ts";
 import { clampText } from "../format.ts";
-import { t } from "../i18n/index.ts";
 import { groupSkills } from "./skills-grouping.ts";
 import {
   computeSkillMissing,

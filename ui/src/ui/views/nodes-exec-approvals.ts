@@ -1,11 +1,10 @@
+import { t } from "../../i18n/index.ts";
 import { html, nothing } from "lit";
 import type {
   ExecApprovalsAllowlistEntry,
   ExecApprovalsFile,
 } from "../controllers/exec-approvals.ts";
-import type { NodesProps } from "./nodes.ts";
 import { clampText, formatRelativeTimestamp } from "../format.ts";
-import { t } from "../i18n/index.ts";
 
 type ExecSecurity = "deny" | "allowlist" | "full";
 type ExecAsk = "off" | "on-miss" | "always";

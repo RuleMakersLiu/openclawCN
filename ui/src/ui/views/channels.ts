@@ -1,4 +1,5 @@
 import { html, nothing } from "lit";
+import { formatRelativeTimestamp } from "../format.ts";
 import type {
   ChannelAccountSnapshot,
   ChannelUiMetaEntry,
@@ -14,7 +15,6 @@ import type {
   WhatsAppStatus,
 } from "../types.ts";
 import type { ChannelKey, ChannelsChannelData, ChannelsProps } from "./channels.types.ts";
-import { formatRelativeTimestamp } from "../format.ts";
 import { t } from "../i18n/index.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
 import { renderDiscordCard } from "./channels.discord.ts";

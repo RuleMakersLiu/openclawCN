@@ -1,6 +1,5 @@
 import { html, nothing } from "lit";
 import { formatDurationCompact } from "../../../../src/infra/format-time/format-duration.ts";
-import { t } from "../i18n/index.ts";
 import {
   formatCost,
   formatDayLabel,
@@ -205,16 +204,16 @@ function renderDailyChartCompact(
               dailyChartMode === "by-type"
                 ? isTokenMode
                   ? [
-                      `${t("usage.detail.output")} ${formatTokens(d.output)}`,
-                      `${t("usage.detail.input")} ${formatTokens(d.input)}`,
-                      `${t("usage.detail.cacheWrite")} ${formatTokens(d.cacheWrite)}`,
-                      `${t("usage.detail.cacheRead")} ${formatTokens(d.cacheRead)}`,
+                      `Output ${formatTokens(d.output)}`,
+                      `Input ${formatTokens(d.input)}`,
+                      `Cache write ${formatTokens(d.cacheWrite)}`,
+                      `Cache read ${formatTokens(d.cacheRead)}`,
                     ]
                   : [
-                      `${t("usage.detail.output")} ${formatCost(d.outputCost ?? 0)}`,
-                      `${t("usage.detail.input")} ${formatCost(d.inputCost ?? 0)}`,
-                      `${t("usage.detail.cacheWrite")} ${formatCost(d.cacheWriteCost ?? 0)}`,
-                      `${t("usage.detail.cacheRead")} ${formatCost(d.cacheReadCost ?? 0)}`,
+                      `Output ${formatCost(d.outputCost ?? 0)}`,
+                      `Input ${formatCost(d.inputCost ?? 0)}`,
+                      `Cache write ${formatCost(d.cacheWriteCost ?? 0)}`,
+                      `Cache read ${formatCost(d.cacheReadCost ?? 0)}`,
                     ]
                 : [];
             const totalLabel = isTokenMode ? formatTokens(d.totalTokens) : formatCost(d.totalCost);
@@ -281,25 +280,25 @@ function renderCostBreakdownCompact(totals: UsageTotals, mode: "tokens" | "cost"
 
   return html`
     <div class="cost-breakdown cost-breakdown-compact">
-      <div class="cost-breakdown-header">${isTokenMode ? t("usage.chartMode.tokens") : t("usage.chartMode.cost")} ${t("usage.detail.byType")}</div>
+      <div class="cost-breakdown-header">${isTokenMode ? "Tokens" : "Cost"} by Type</div>
       <div class="cost-breakdown-bar">
         <div class="cost-segment output" style="width: ${(isTokenMode ? tokenPcts.output : breakdown.output.pct).toFixed(1)}%"
-          title="${t("usage.detail.output")}: ${isTokenMode ? formatTokens(totals.output) : formatCost(breakdown.output.cost)}"></div>
+          title="Output: ${isTokenMode ? formatTokens(totals.output) : formatCost(breakdown.output.cost)}"></div>
         <div class="cost-segment input" style="width: ${(isTokenMode ? tokenPcts.input : breakdown.input.pct).toFixed(1)}%"
-          title="${t("usage.detail.input")}: ${isTokenMode ? formatTokens(totals.input) : formatCost(breakdown.input.cost)}"></div>
+          title="Input: ${isTokenMode ? formatTokens(totals.input) : formatCost(breakdown.input.cost)}"></div>
         <div class="cost-segment cache-write" style="width: ${(isTokenMode ? tokenPcts.cacheWrite : breakdown.cacheWrite.pct).toFixed(1)}%"
-          title="${t("usage.detail.cacheWrite")}: ${isTokenMode ? formatTokens(totals.cacheWrite) : formatCost(breakdown.cacheWrite.cost)}"></div>
+          title="Cache Write: ${isTokenMode ? formatTokens(totals.cacheWrite) : formatCost(breakdown.cacheWrite.cost)}"></div>
         <div class="cost-segment cache-read" style="width: ${(isTokenMode ? tokenPcts.cacheRead : breakdown.cacheRead.pct).toFixed(1)}%"
-          title="${t("usage.detail.cacheRead")}: ${isTokenMode ? formatTokens(totals.cacheRead) : formatCost(breakdown.cacheRead.cost)}"></div>
+          title="Cache Read: ${isTokenMode ? formatTokens(totals.cacheRead) : formatCost(breakdown.cacheRead.cost)}"></div>
       </div>
       <div class="cost-breakdown-legend">
-        <span class="legend-item"><span class="legend-dot output"></span>${t("usage.detail.output")} ${isTokenMode ? formatTokens(totals.output) : formatCost(breakdown.output.cost)}</span>
-        <span class="legend-item"><span class="legend-dot input"></span>${t("usage.detail.input")} ${isTokenMode ? formatTokens(totals.input) : formatCost(breakdown.input.cost)}</span>
-        <span class="legend-item"><span class="legend-dot cache-write"></span>${t("usage.detail.cacheWrite")} ${isTokenMode ? formatTokens(totals.cacheWrite) : formatCost(breakdown.cacheWrite.cost)}</span>
-        <span class="legend-item"><span class="legend-dot cache-read"></span>${t("usage.detail.cacheRead")} ${isTokenMode ? formatTokens(totals.cacheRead) : formatCost(breakdown.cacheRead.cost)}</span>
+        <span class="legend-item"><span class="legend-dot output"></span>Output ${isTokenMode ? formatTokens(totals.output) : formatCost(breakdown.output.cost)}</span>
+        <span class="legend-item"><span class="legend-dot input"></span>Input ${isTokenMode ? formatTokens(totals.input) : formatCost(breakdown.input.cost)}</span>
+        <span class="legend-item"><span class="legend-dot cache-write"></span>Cache Write ${isTokenMode ? formatTokens(totals.cacheWrite) : formatCost(breakdown.cacheWrite.cost)}</span>
+        <span class="legend-item"><span class="legend-dot cache-read"></span>Cache Read ${isTokenMode ? formatTokens(totals.cacheRead) : formatCost(breakdown.cacheRead.cost)}</span>
       </div>
       <div class="cost-breakdown-total">
-        ${t("usage.detail.total")}: ${isTokenMode ? formatTokens(totals.totalTokens) : formatCost(totals.totalCost)}
+        Total: ${isTokenMode ? formatTokens(totals.totalTokens) : formatCost(totals.totalCost)}
       </div>
     </div>
   `;
@@ -402,7 +401,9 @@ function renderUsageInsights(
   const errorHint = "Error rate = errors / total messages. Lower is better.";
   const throughputHint = "Throughput shows tokens per minute over active time. Higher is better.";
   const tokensHint = "Average tokens per message in this range.";
-  const costHint = showCostHint ? t("usage.overview.avgCostMissing") : t("usage.overview.avgCost");
+  const costHint = showCostHint
+    ? "Average cost per message when providers report costs. Cost data is missing for some or all sessions in this range."
+    : "Average cost per message when providers report costs.";
 
   const errorDays = aggregates.daily
     .filter((day) => day.messages > 0 && day.errors > 0)
@@ -648,6 +649,38 @@ function renderSessionsCard(
     0,
   );
 
+  const renderSessionBarRow = (s: UsageSessionEntry, isSelected: boolean) => {
+    const value = getSessionValue(s);
+    const displayLabel = formatSessionListLabel(s);
+    const meta = buildSessionMeta(s);
+    return html`
+      <div
+        class="session-bar-row ${isSelected ? "selected" : ""}"
+        @click=${(e: MouseEvent) => onSelectSession(s.key, e.shiftKey)}
+        title="${s.key}"
+      >
+        <div class="session-bar-label">
+          <div class="session-bar-title">${displayLabel}</div>
+          ${meta.length > 0 ? html`<div class="session-bar-meta">${meta.join(" · ")}</div>` : nothing}
+        </div>
+        <div class="session-bar-track" style="display: none;"></div>
+        <div class="session-bar-actions">
+          <button
+            class="session-copy-btn"
+            title="Copy session name"
+            @click=${(e: MouseEvent) => {
+              e.stopPropagation();
+              void copySessionName(s);
+            }}
+          >
+            Copy
+          </button>
+          <div class="session-bar-value">${isTokenMode ? formatTokens(value) : formatCost(value)}</div>
+        </div>
+      </div>
+    `;
+  };
+
   const selectedSet = new Set(selectedSessions);
   const selectedEntries = sortedWithDir.filter((s) => selectedSet.has(s.key));
   const selectedCount = selectedEntries.length;
@@ -684,21 +717,21 @@ function renderSessionsCard(
           </button>
         </div>
         <label class="sessions-sort">
-          <span>${t("usage.overview.sort")}</span>
+          <span>Sort</span>
           <select
             @change=${(e: Event) => onSessionSortChange((e.target as HTMLSelectElement).value as typeof sessionSort)}
           >
-            <option value="cost" ?selected=${sessionSort === "cost"}>${t("usage.overview.sortCost")}</option>
-            <option value="errors" ?selected=${sessionSort === "errors"}>${t("usage.detail.errors")}</option>
-            <option value="messages" ?selected=${sessionSort === "messages"}>${t("usage.overview.sortMessages")}</option>
-            <option value="recent" ?selected=${sessionSort === "recent"}>${t("usage.overview.sortRecent")}</option>
-            <option value="tokens" ?selected=${sessionSort === "tokens"}>${t("usage.overview.sortTokens")}</option>
+            <option value="cost" ?selected=${sessionSort === "cost"}>Cost</option>
+            <option value="errors" ?selected=${sessionSort === "errors"}>Errors</option>
+            <option value="messages" ?selected=${sessionSort === "messages"}>Messages</option>
+            <option value="recent" ?selected=${sessionSort === "recent"}>Recent</option>
+            <option value="tokens" ?selected=${sessionSort === "tokens"}>Tokens</option>
           </select>
         </label>
         <button
           class="btn btn-sm sessions-action-btn icon"
           @click=${() => onSessionSortDirChange(sessionSortDir === "desc" ? "asc" : "desc")}
-          title=${sessionSortDir === "desc" ? t("usage.overview.descending") : t("usage.overview.ascending")}
+          title=${sessionSortDir === "desc" ? "Descending" : "Ascending"}
         >
           ${sessionSortDir === "desc" ? "↓" : "↑"}
         </button>
@@ -719,83 +752,22 @@ function renderSessionsCard(
                 <div class="muted" style="padding: 20px; text-align: center">No recent sessions</div>
               `
             : html`
-                <div class="session-bars" style="max-height: 220px; margin-top: 6px;">
-                  ${recentEntries.map((s) => {
-                    const value = getSessionValue(s);
-                    const isSelected = selectedSet.has(s.key);
-                    const displayLabel = formatSessionListLabel(s);
-                    const meta = buildSessionMeta(s);
-                    return html`
-                      <div
-                        class="session-bar-row ${isSelected ? "selected" : ""}"
-                        @click=${(e: MouseEvent) => onSelectSession(s.key, e.shiftKey)}
-                        title="${s.key}"
-                      >
-                        <div class="session-bar-label">
-                          <div class="session-bar-title">${displayLabel}</div>
-                          ${meta.length > 0 ? html`<div class="session-bar-meta">${meta.join(" · ")}</div>` : nothing}
-                        </div>
-                        <div class="session-bar-track" style="display: none;"></div>
-                        <div class="session-bar-actions">
-                          <button
-                            class="session-copy-btn"
-                            title=${t("usage.overview.copySession")}
-                            @click=${(e: MouseEvent) => {
-                              e.stopPropagation();
-                              void copySessionName(s);
-                            }}
-                          >
-                            Copy
-                          </button>
-                          <div class="session-bar-value">${isTokenMode ? formatTokens(value) : formatCost(value)}</div>
-                        </div>
-                      </div>
-                    `;
-                  })}
-                </div>
-              `
+	                <div class="session-bars" style="max-height: 220px; margin-top: 6px;">
+	                  ${recentEntries.map((s) => renderSessionBarRow(s, selectedSet.has(s.key)))}
+	                </div>
+	              `
           : sessions.length === 0
             ? html`
                 <div class="muted" style="padding: 20px; text-align: center">No sessions in range</div>
               `
             : html`
-                <div class="session-bars">
-                  ${sortedWithDir.slice(0, 50).map((s) => {
-                    const value = getSessionValue(s);
-                    const isSelected = selectedSessions.includes(s.key);
-                    const displayLabel = formatSessionListLabel(s);
-                    const meta = buildSessionMeta(s);
-
-                    return html`
-                      <div
-                        class="session-bar-row ${isSelected ? "selected" : ""}"
-                        @click=${(e: MouseEvent) => onSelectSession(s.key, e.shiftKey)}
-                        title="${s.key}"
-                      >
-                        <div class="session-bar-label">
-                          <div class="session-bar-title">${displayLabel}</div>
-                          ${meta.length > 0 ? html`<div class="session-bar-meta">${meta.join(" · ")}</div>` : nothing}
-                        </div>
-                        <div class="session-bar-track" style="display: none;"></div>
-                        <div class="session-bar-actions">
-                          <button
-                            class="session-copy-btn"
-                            title=${t("usage.overview.copySession")}
-                            @click=${(e: MouseEvent) => {
-                              e.stopPropagation();
-                              void copySessionName(s);
-                            }}
-                          >
-                            Copy
-                          </button>
-                          <div class="session-bar-value">${isTokenMode ? formatTokens(value) : formatCost(value)}</div>
-                        </div>
-                      </div>
-                    `;
-                  })}
-                  ${sessions.length > 50 ? html`<div class="muted" style="padding: 8px; text-align: center; font-size: 11px;">+${sessions.length - 50} more</div>` : nothing}
-                </div>
-              `
+	                <div class="session-bars">
+	                  ${sortedWithDir
+                      .slice(0, 50)
+                      .map((s) => renderSessionBarRow(s, selectedSet.has(s.key)))}
+	                  ${sessions.length > 50 ? html`<div class="muted" style="padding: 8px; text-align: center; font-size: 11px;">+${sessions.length - 50} more</div>` : nothing}
+	                </div>
+	              `
       }
       ${
         selectedCount > 1
@@ -803,37 +775,7 @@ function renderSessionsCard(
               <div style="margin-top: 10px;">
                 <div class="sessions-card-count">Selected (${selectedCount})</div>
                 <div class="session-bars" style="max-height: 160px; margin-top: 6px;">
-                  ${selectedEntries.map((s) => {
-                    const value = getSessionValue(s);
-                    const displayLabel = formatSessionListLabel(s);
-                    const meta = buildSessionMeta(s);
-                    return html`
-                      <div
-                        class="session-bar-row selected"
-                        @click=${(e: MouseEvent) => onSelectSession(s.key, e.shiftKey)}
-                        title="${s.key}"
-                      >
-                        <div class="session-bar-label">
-                          <div class="session-bar-title">${displayLabel}</div>
-                          ${meta.length > 0 ? html`<div class="session-bar-meta">${meta.join(" · ")}</div>` : nothing}
-                        </div>
-                  <div class="session-bar-track" style="display: none;"></div>
-                        <div class="session-bar-actions">
-                          <button
-                            class="session-copy-btn"
-                            title=${t("usage.overview.copySession")}
-                            @click=${(e: MouseEvent) => {
-                              e.stopPropagation();
-                              void copySessionName(s);
-                            }}
-                          >
-                            Copy
-                          </button>
-                          <div class="session-bar-value">${isTokenMode ? formatTokens(value) : formatCost(value)}</div>
-                        </div>
-                      </div>
-                    `;
-                  })}
+                  ${selectedEntries.map((s) => renderSessionBarRow(s, true))}
                 </div>
               </div>
             `

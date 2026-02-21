@@ -21,13 +21,13 @@ export function getTabGroups() {
 
 /** @deprecated Use getTabGroups() for localized labels */
 export const TAB_GROUPS = [
-  { label: "Chat", tabs: ["chat"] },
+  { label: "chat", tabs: ["chat"] },
   {
-    label: "Control",
+    label: "control",
     tabs: ["overview", "channels", "instances", "sessions", "usage", "cron"],
   },
-  { label: "Agent", tabs: ["agents", "skills", "nodes"] },
-  { label: "Settings", tabs: ["config", "debug", "logs"] },
+  { label: "agent", tabs: ["agents", "skills", "nodes"] },
+  { label: "settings", tabs: ["config", "debug", "logs"] },
 ] as const;
 
 export type Tab =
@@ -176,9 +176,9 @@ export function iconForTab(tab: Tab): IconName {
 }
 
 export function titleForTab(tab: Tab) {
-  return t(`tab.${tab}`) || t("tab.control");
+  return t(`tabs.${tab}`);
 }
 
 export function subtitleForTab(tab: Tab) {
-  return t(`tab.${tab}.sub`) || "";
+  return t(`subtitles.${tab}`);
 }

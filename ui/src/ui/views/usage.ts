@@ -1,5 +1,4 @@
 import { html, nothing } from "lit";
-import { t } from "../i18n/index.ts";
 import { extractQueryTerms, filterSessionsByQuery } from "../usage-helpers.ts";
 import {
   buildAggregatesFromSessions,
@@ -87,7 +86,7 @@ export function renderUsage(props: UsageProps) {
           <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
             <div style="display: flex; gap: 8px; align-items: center;">
               <input type="date" .value=${props.startDate} disabled style="padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); font-size: 13px; opacity: 0.6;" />
-              <span style="color: var(--text-muted);">${t("usage.to")}</span>
+              <span style="color: var(--muted);">to</span>
               <input type="date" .value=${props.endDate} disabled style="padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); font-size: 13px; opacity: 0.6;" />
             </div>
           </div>
@@ -343,7 +342,7 @@ export function renderUsage(props: UsageProps) {
           0
       : false);
   const datePresets = [
-    { label: t("usage.preset.today"), days: 1 },
+    { label: "Today", days: 1 },
     { label: "7d", days: 7 },
     { label: "30d", days: 30 },
   ];
@@ -387,7 +386,7 @@ export function renderUsage(props: UsageProps) {
             selectedCount > 0
               ? html`<span class="usage-filter-badge">${selectedCount}</span>`
               : html`
-                  <span class="usage-filter-badge">${t("usage.filter.all")}</span>
+                  <span class="usage-filter-badge">All</span>
                 `
           }
         </summary>
@@ -402,7 +401,7 @@ export function renderUsage(props: UsageProps) {
               }}
               ?disabled=${allSelected}
             >
-              ${t("usage.filter.selectAll")}
+              Select All
             </button>
             <button
               class="btn btn-sm"
@@ -413,7 +412,7 @@ export function renderUsage(props: UsageProps) {
               }}
               ?disabled=${selectedCount === 0}
             >
-              ${t("usage.query.clear")}
+              Clear
             </button>
           </div>
           <div class="usage-filter-options">
@@ -449,25 +448,25 @@ export function renderUsage(props: UsageProps) {
     <style>${usageStylesString}</style>
 
     <section class="usage-page-header">
-      <div class="usage-page-title">${t("usage.page.title")}</div>
-      <div class="usage-page-subtitle">${t("usage.page.subtitle")}</div>
+      <div class="usage-page-title">Usage</div>
+      <div class="usage-page-subtitle">See where tokens go, when sessions spike, and what drives cost.</div>
     </section>
 
     <section class="card usage-header ${props.headerPinned ? "pinned" : ""}">
       <div class="usage-header-row">
         <div class="usage-header-title">
-          <div class="card-title" style="margin: 0;">${t("usage.filters.title")}</div>
+          <div class="card-title" style="margin: 0;">Filters</div>
           ${
             props.loading
               ? html`
-                  <span class="usage-refresh-indicator">${t("usage.loading")}</span>
+                  <span class="usage-refresh-indicator">Loading</span>
                 `
               : nothing
           }
           ${
             isEmpty
               ? html`
-                  <span class="usage-query-hint">${t("usage.loadHint")}</span>
+                  <span class="usage-query-hint">Select a date range and click Refresh to load usage.</span>
                 `
               : nothing
           }
@@ -477,24 +476,24 @@ export function renderUsage(props: UsageProps) {
             displayTotals
               ? html`
                 <span class="usage-metric-badge">
-                  <strong>${formatTokens(displayTotals.totalTokens)}</strong> ${t("usage.tokens")}
+                  <strong>${formatTokens(displayTotals.totalTokens)}</strong> tokens
                 </span>
                 <span class="usage-metric-badge">
-                  <strong>${formatCost(displayTotals.totalCost)}</strong> ${t("usage.cost")}
+                  <strong>${formatCost(displayTotals.totalCost)}</strong> cost
                 </span>
                 <span class="usage-metric-badge">
                   <strong>${displaySessionCount}</strong>
-                  ${displaySessionCount !== 1 ? t("usage.sessions") : t("usage.session")}
+                  session${displaySessionCount !== 1 ? "s" : ""}
                 </span>
               `
               : nothing
           }
           <button
             class="usage-pin-btn ${props.headerPinned ? "active" : ""}"
-            title=${props.headerPinned ? t("usage.unpin") : t("usage.pinFilters")}
+            title=${props.headerPinned ? "Unpin filters" : "Pin filters"}
             @click=${props.onToggleHeaderPinned}
           >
-            ${props.headerPinned ? t("usage.pinned") : t("usage.pin")}
+            ${props.headerPinned ? "Pinned" : "Pin"}
           </button>
           <details
             class="usage-export-menu"
@@ -513,7 +512,7 @@ export function renderUsage(props: UsageProps) {
               window.addEventListener("click", onClick, true);
             }}
           >
-            <summary class="usage-export-button">${t("usage.export.btn")}</summary>
+            <summary class="usage-export-button">Export ▾</summary>
             <div class="usage-export-popover">
               <div class="usage-export-list">
                 <button
@@ -526,7 +525,7 @@ export function renderUsage(props: UsageProps) {
                     )}
                   ?disabled=${filteredSessions.length === 0}
                 >
-                  ${t("usage.sessionsCsv")}
+                  Sessions CSV
                 </button>
                 <button
                   class="usage-export-item"
@@ -538,7 +537,7 @@ export function renderUsage(props: UsageProps) {
                     )}
                   ?disabled=${filteredDaily.length === 0}
                 >
-                  ${t("usage.dailyCsv")}
+                  Daily CSV
                 </button>
                 <button
                   class="usage-export-item"
@@ -590,23 +589,23 @@ export function renderUsage(props: UsageProps) {
           <input
             type="date"
             .value=${props.startDate}
-            title=${t("usage.startDate")}
+            title="Start Date"
             @change=${(e: Event) => props.onStartDateChange((e.target as HTMLInputElement).value)}
           />
-          <span style="color: var(--text-muted);">${t("usage.to")}</span>
+          <span style="color: var(--muted);">to</span>
           <input
             type="date"
             .value=${props.endDate}
-            title=${t("usage.endDate")}
+            title="End Date"
             @change=${(e: Event) => props.onEndDateChange((e.target as HTMLInputElement).value)}
           />
           <select
-            title=${t("usage.timeZone")}
+            title="Time zone"
             .value=${props.timeZone}
             @change=${(e: Event) =>
               props.onTimeZoneChange((e.target as HTMLSelectElement).value as "local" | "utc")}
           >
-            <option value="local">${t("usage.tz.local")}</option>
+            <option value="local">Local</option>
             <option value="utc">UTC</option>
           </select>
           <div class="chart-toggle">
@@ -614,13 +613,13 @@ export function renderUsage(props: UsageProps) {
               class="toggle-btn ${isTokenMode ? "active" : ""}"
               @click=${() => props.onChartModeChange("tokens")}
             >
-              ${t("usage.chartMode.tokens")}
+              Tokens
             </button>
             <button
               class="toggle-btn ${!isTokenMode ? "active" : ""}"
               @click=${() => props.onChartModeChange("cost")}
             >
-              ${t("usage.chartMode.cost")}
+              Cost
             </button>
           </div>
           <button
@@ -628,7 +627,7 @@ export function renderUsage(props: UsageProps) {
             @click=${props.onRefresh}
             ?disabled=${props.loading}
           >
-            ${t("usage.refresh")}
+            Refresh
           </button>
         </div>
         
@@ -640,7 +639,7 @@ export function renderUsage(props: UsageProps) {
             class="usage-query-input"
             type="text"
             .value=${props.queryDraft}
-            placeholder=${t("usage.query.placeholder")}
+            placeholder="Filter sessions (e.g. key:agent:main:cron* model:gpt-4o has:errors minTokens:2000)"
             @input=${(e: Event) => props.onQueryDraftChange((e.target as HTMLInputElement).value)}
             @keydown=${(e: KeyboardEvent) => {
               if (e.key === "Enter") {
@@ -655,30 +654,30 @@ export function renderUsage(props: UsageProps) {
               @click=${props.onApplyQuery}
               ?disabled=${props.loading || (!hasDraftQuery && !hasQuery)}
             >
-              ${t("usage.query.filter")}
+              Filter (client-side)
             </button>
             ${
               hasDraftQuery || hasQuery
-                ? html`<button class="btn btn-sm usage-action-btn usage-secondary-btn" @click=${props.onClearQuery}>${t("usage.query.clear")}</button>`
+                ? html`<button class="btn btn-sm usage-action-btn usage-secondary-btn" @click=${props.onClearQuery}>Clear</button>`
                 : nothing
             }
             <span class="usage-query-hint">
               ${
                 hasQuery
-                  ? t("usage.query.match", String(filteredSessions.length), String(totalSessions))
-                  : t("usage.query.range", String(totalSessions))
+                  ? `${filteredSessions.length} of ${totalSessions} sessions match`
+                  : `${totalSessions} sessions in range`
               }
             </span>
           </div>
         </div>
         <div class="usage-filter-row">
-          ${renderFilterSelect("agent", t("usage.filter.agent"), agentOptions)}
-          ${renderFilterSelect("channel", t("usage.filter.channel"), channelOptions)}
-          ${renderFilterSelect("provider", t("usage.filter.provider"), providerOptions)}
-          ${renderFilterSelect("model", t("usage.filter.model"), modelOptions)}
-          ${renderFilterSelect("tool", t("usage.filter.tool"), toolOptions)}
+          ${renderFilterSelect("agent", "Agent", agentOptions)}
+          ${renderFilterSelect("channel", "Channel", channelOptions)}
+          ${renderFilterSelect("provider", "Provider", providerOptions)}
+          ${renderFilterSelect("model", "Model", modelOptions)}
+          ${renderFilterSelect("tool", "Tool", toolOptions)}
           <span class="usage-query-hint">
-            ${t("usage.query.tip")}
+            Tip: use filters or click bars to filter days.
           </span>
         </div>
         ${
@@ -691,7 +690,7 @@ export function renderUsage(props: UsageProps) {
                       <span class="usage-query-chip">
                         ${label}
                         <button
-                          title=${t("usage.filter.removeFilter")}
+                          title="Remove filter"
                           @click=${() =>
                             props.onQueryDraftChange(removeQueryToken(props.queryDraft, label))}
                         >
@@ -746,7 +745,7 @@ export function renderUsage(props: UsageProps) {
         props.sessionsLimitReached
           ? html`
               <div class="callout warning" style="margin-top: 12px">
-                ${t("usage.sessionsLimitReached")}
+                Showing first 1,000 sessions. Narrow date range for complete results.
               </div>
             `
           : nothing
@@ -812,6 +811,9 @@ export function renderUsage(props: UsageProps) {
             props.onTimeSeriesModeChange,
             props.timeSeriesBreakdownMode,
             props.onTimeSeriesBreakdownChange,
+            props.timeSeriesCursorStart,
+            props.timeSeriesCursorEnd,
+            props.onTimeSeriesCursorRangeChange,
             props.startDate,
             props.endDate,
             props.selectedDays,
