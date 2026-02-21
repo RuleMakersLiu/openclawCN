@@ -2,6 +2,7 @@ import { html, nothing } from "lit";
 import type { SlackStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
 import { formatRelativeTimestamp } from "../format.ts";
+import { t } from "../i18n/index.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
 
 export function renderSlackCard(params: {
@@ -13,25 +14,25 @@ export function renderSlackCard(params: {
 
   return html`
     <div class="card">
-      <div class="card-title">Slack</div>
-      <div class="card-sub">Socket mode status and channel configuration.</div>
+      <div class="card-title">${t("channels.slack.title")}</div>
+      <div class="card-sub">${t("channels.slack.sub")}</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
+          <span class="label">${t("channels.label.configured")}</span>
           <span>${slack?.configured ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Running</span>
+          <span class="label">${t("channels.label.running")}</span>
           <span>${slack?.running ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Last start</span>
+          <span class="label">${t("channels.label.lastStart")}</span>
           <span>${slack?.lastStartAt ? formatRelativeTimestamp(slack.lastStartAt) : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Last probe</span>
+          <span class="label">${t("channels.label.lastProbe")}</span>
           <span>${slack?.lastProbeAt ? formatRelativeTimestamp(slack.lastProbeAt) : "n/a"}</span>
         </div>
       </div>

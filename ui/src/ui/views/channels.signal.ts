@@ -2,6 +2,7 @@ import { html, nothing } from "lit";
 import type { SignalStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
 import { formatRelativeTimestamp } from "../format.ts";
+import { t } from "../i18n/index.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
 
 export function renderSignalCard(params: {
@@ -13,17 +14,17 @@ export function renderSignalCard(params: {
 
   return html`
     <div class="card">
-      <div class="card-title">Signal</div>
-      <div class="card-sub">signal-cli status and channel configuration.</div>
+      <div class="card-title">${t("channels.signal.title")}</div>
+      <div class="card-sub">${t("channels.signal.sub")}</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
+          <span class="label">${t("channels.label.configured")}</span>
           <span>${signal?.configured ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Running</span>
+          <span class="label">${t("channels.label.running")}</span>
           <span>${signal?.running ? "Yes" : "No"}</span>
         </div>
         <div>
@@ -31,11 +32,11 @@ export function renderSignalCard(params: {
           <span>${signal?.baseUrl ?? "n/a"}</span>
         </div>
         <div>
-          <span class="label">Last start</span>
+          <span class="label">${t("channels.label.lastStart")}</span>
           <span>${signal?.lastStartAt ? formatRelativeTimestamp(signal.lastStartAt) : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Last probe</span>
+          <span class="label">${t("channels.label.lastProbe")}</span>
           <span>${signal?.lastProbeAt ? formatRelativeTimestamp(signal.lastProbeAt) : "n/a"}</span>
         </div>
       </div>

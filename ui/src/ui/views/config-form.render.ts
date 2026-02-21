@@ -1,8 +1,16 @@
 import { html, nothing } from "lit";
 import type { ConfigUiHints } from "../types.ts";
+import { t } from "../i18n/index.ts";
 import { icons } from "../icons.ts";
 import { renderNode } from "./config-form.node.ts";
-import { hintForPath, humanize, schemaType, type JsonSchema } from "./config-form.shared.ts";
+import {
+  hintForPath,
+  humanize,
+  schemaType,
+  translateHintLabel,
+  translateHintHelp,
+  type JsonSchema,
+} from "./config-form.shared.ts";
 
 export type ConfigFormProps = {
   schema: JsonSchema | null;
@@ -236,43 +244,64 @@ const sectionIcons = {
   `,
 };
 
-// Section metadata
-export const SECTION_META: Record<string, { label: string; description: string }> = {
-  env: {
-    label: "Environment Variables",
-    description: "Environment variables passed to the gateway process",
+// Section metadata keys – labels & descriptions are resolved via i18n at render time.
+const SECTION_KEYS = [
+  "env",
+  "update",
+  "agents",
+  "auth",
+  "channels",
+  "messages",
+  "commands",
+  "hooks",
+  "skills",
+  "tools",
+  "gateway",
+  "wizard",
+  "meta",
+  "logging",
+  "browser",
+  "ui",
+  "models",
+  "bindings",
+  "broadcast",
+  "audio",
+  "session",
+  "cron",
+  "web",
+  "discovery",
+  "canvasHost",
+  "talk",
+  "plugins",
+] as const;
+
+/** Lazily resolved so that the current locale is applied on every access. */
+export const SECTION_META: Record<string, { label: string; description: string }> = new Proxy(
+  {} as Record<string, { label: string; description: string }>,
+  {
+    get(_target, prop: string) {
+      if (prop === "__proto__" || typeof prop === "symbol") {
+        return undefined;
+      }
+      return {
+        label: t(`config.section.${prop}`),
+        description: t(`config.section.${prop}.desc`),
+      };
+    },
+    has(_target, prop: string) {
+      return (SECTION_KEYS as readonly string[]).includes(prop);
+    },
+    ownKeys() {
+      return [...SECTION_KEYS];
+    },
+    getOwnPropertyDescriptor(_target, prop: string) {
+      if ((SECTION_KEYS as readonly string[]).includes(prop)) {
+        return { configurable: true, enumerable: true, writable: false, value: undefined };
+      }
+      return undefined;
+    },
   },
-  update: { label: "Updates", description: "Auto-update settings and release channel" },
-  agents: { label: "Agents", description: "Agent configurations, models, and identities" },
-  auth: { label: "Authentication", description: "API keys and authentication profiles" },
-  channels: {
-    label: "Channels",
-    description: "Messaging channels (Telegram, Discord, Slack, etc.)",
-  },
-  messages: { label: "Messages", description: "Message handling and routing settings" },
-  commands: { label: "Commands", description: "Custom slash commands" },
-  hooks: { label: "Hooks", description: "Webhooks and event hooks" },
-  skills: { label: "Skills", description: "Skill packs and capabilities" },
-  tools: { label: "Tools", description: "Tool configurations (browser, search, etc.)" },
-  gateway: { label: "Gateway", description: "Gateway server settings (port, auth, binding)" },
-  wizard: { label: "Setup Wizard", description: "Setup wizard state and history" },
-  // Additional sections
-  meta: { label: "Metadata", description: "Gateway metadata and version information" },
-  logging: { label: "Logging", description: "Log levels and output configuration" },
-  browser: { label: "Browser", description: "Browser automation settings" },
-  ui: { label: "UI", description: "User interface preferences" },
-  models: { label: "Models", description: "AI model configurations and providers" },
-  bindings: { label: "Bindings", description: "Key bindings and shortcuts" },
-  broadcast: { label: "Broadcast", description: "Broadcast and notification settings" },
-  audio: { label: "Audio", description: "Audio input/output settings" },
-  session: { label: "Session", description: "Session management and persistence" },
-  cron: { label: "Cron", description: "Scheduled tasks and automation" },
-  web: { label: "Web", description: "Web server and API settings" },
-  discovery: { label: "Discovery", description: "Service discovery and networking" },
-  canvasHost: { label: "Canvas Host", description: "Canvas rendering and display" },
-  talk: { label: "Talk", description: "Voice and speech settings" },
-  plugins: { label: "Plugins", description: "Plugin management and extensions" },
-};
+);
 
 function getSectionIcon(key: string) {
   return sectionIcons[key as keyof typeof sectionIcons] ?? sectionIcons.default;
@@ -413,7 +442,7 @@ export function renderConfigForm(props: ConfigFormProps) {
       <div class="config-empty">
         <div class="config-empty__icon">${icons.search}</div>
         <div class="config-empty__text">
-          ${searchQuery ? `No settings match "${searchQuery}"` : "No settings in this section"}
+          ${searchQuery ? t("config.noMatch", searchQuery) : t("config.noSettingsInSection")}
         </div>
       </div>
     `;
@@ -426,8 +455,11 @@ export function renderConfigForm(props: ConfigFormProps) {
           ? (() => {
               const { sectionKey, subsectionKey, schema: node } = subsectionContext;
               const hint = hintForPath([sectionKey, subsectionKey], props.uiHints);
-              const label = hint?.label ?? node.title ?? humanize(subsectionKey);
-              const description = hint?.help ?? node.description ?? "";
+              const hintPath = `${sectionKey}.${subsectionKey}`;
+              const rawLabel = hint?.label ?? node.title ?? humanize(subsectionKey);
+              const rawDesc = hint?.help ?? node.description ?? "";
+              const label = translateHintLabel(hintPath, rawLabel);
+              const description = translateHintHelp(hintPath, rawDesc);
               const sectionValue = value[sectionKey];
               const scopedValue =
                 sectionValue && typeof sectionValue === "object"

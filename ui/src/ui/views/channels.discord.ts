@@ -2,6 +2,7 @@ import { html, nothing } from "lit";
 import type { DiscordStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
 import { formatRelativeTimestamp } from "../format.ts";
+import { t } from "../i18n/index.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
 
 export function renderDiscordCard(params: {
@@ -13,25 +14,25 @@ export function renderDiscordCard(params: {
 
   return html`
     <div class="card">
-      <div class="card-title">Discord</div>
-      <div class="card-sub">Bot status and channel configuration.</div>
+      <div class="card-title">${t("channels.discord.title")}</div>
+      <div class="card-sub">${t("channels.discord.sub")}</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
+          <span class="label">${t("channels.label.configured")}</span>
           <span>${discord?.configured ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Running</span>
+          <span class="label">${t("channels.label.running")}</span>
           <span>${discord?.running ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Last start</span>
+          <span class="label">${t("channels.label.lastStart")}</span>
           <span>${discord?.lastStartAt ? formatRelativeTimestamp(discord.lastStartAt) : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Last probe</span>
+          <span class="label">${t("channels.label.lastProbe")}</span>
           <span>${discord?.lastProbeAt ? formatRelativeTimestamp(discord.lastProbeAt) : "n/a"}</span>
         </div>
       </div>

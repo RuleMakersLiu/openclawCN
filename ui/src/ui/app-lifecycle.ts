@@ -17,6 +17,7 @@ import {
   syncTabWithLocation,
   syncThemeWithSettings,
 } from "./app-settings.ts";
+import { initLocale } from "./i18n/index.ts";
 
 type LifecycleHost = {
   basePath: string;
@@ -35,6 +36,7 @@ type LifecycleHost = {
 };
 
 export function handleConnected(host: LifecycleHost) {
+  initLocale();
   host.basePath = inferBasePath();
   applySettingsFromUrl(host as unknown as Parameters<typeof applySettingsFromUrl>[0]);
   syncTabWithLocation(host as unknown as Parameters<typeof syncTabWithLocation>[0], true);

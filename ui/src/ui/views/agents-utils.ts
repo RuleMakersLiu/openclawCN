@@ -5,88 +5,257 @@ import {
   normalizeToolName,
   resolveToolProfilePolicy,
 } from "../../../../src/agents/tool-policy.js";
+import { t } from "../i18n/index.ts";
 
 export const TOOL_SECTIONS = [
   {
     id: "fs",
-    label: "Files",
+    get label() {
+      return t("tools.section.fs");
+    },
     tools: [
-      { id: "read", label: "read", description: "Read file contents" },
-      { id: "write", label: "write", description: "Create or overwrite files" },
-      { id: "edit", label: "edit", description: "Make precise edits" },
-      { id: "apply_patch", label: "apply_patch", description: "Patch files (OpenAI)" },
+      {
+        id: "read",
+        label: "read",
+        get description() {
+          return t("tools.desc.read");
+        },
+      },
+      {
+        id: "write",
+        label: "write",
+        get description() {
+          return t("tools.desc.write");
+        },
+      },
+      {
+        id: "edit",
+        label: "edit",
+        get description() {
+          return t("tools.desc.edit");
+        },
+      },
+      {
+        id: "apply_patch",
+        label: "apply_patch",
+        get description() {
+          return t("tools.desc.apply_patch");
+        },
+      },
     ],
   },
   {
     id: "runtime",
-    label: "Runtime",
+    get label() {
+      return t("tools.section.runtime");
+    },
     tools: [
-      { id: "exec", label: "exec", description: "Run shell commands" },
-      { id: "process", label: "process", description: "Manage background processes" },
+      {
+        id: "exec",
+        label: "exec",
+        get description() {
+          return t("tools.desc.exec");
+        },
+      },
+      {
+        id: "process",
+        label: "process",
+        get description() {
+          return t("tools.desc.process");
+        },
+      },
     ],
   },
   {
     id: "web",
-    label: "Web",
+    get label() {
+      return t("tools.section.web");
+    },
     tools: [
-      { id: "web_search", label: "web_search", description: "Search the web" },
-      { id: "web_fetch", label: "web_fetch", description: "Fetch web content" },
+      {
+        id: "web_search",
+        label: "web_search",
+        get description() {
+          return t("tools.desc.web_search");
+        },
+      },
+      {
+        id: "web_fetch",
+        label: "web_fetch",
+        get description() {
+          return t("tools.desc.web_fetch");
+        },
+      },
     ],
   },
   {
     id: "memory",
-    label: "Memory",
+    get label() {
+      return t("tools.section.memory");
+    },
     tools: [
-      { id: "memory_search", label: "memory_search", description: "Semantic search" },
-      { id: "memory_get", label: "memory_get", description: "Read memory files" },
+      {
+        id: "memory_search",
+        label: "memory_search",
+        get description() {
+          return t("tools.desc.memory_search");
+        },
+      },
+      {
+        id: "memory_get",
+        label: "memory_get",
+        get description() {
+          return t("tools.desc.memory_get");
+        },
+      },
     ],
   },
   {
     id: "sessions",
-    label: "Sessions",
+    get label() {
+      return t("tools.section.sessions");
+    },
     tools: [
-      { id: "sessions_list", label: "sessions_list", description: "List sessions" },
-      { id: "sessions_history", label: "sessions_history", description: "Session history" },
-      { id: "sessions_send", label: "sessions_send", description: "Send to session" },
-      { id: "sessions_spawn", label: "sessions_spawn", description: "Spawn sub-agent" },
-      { id: "session_status", label: "session_status", description: "Session status" },
+      {
+        id: "sessions_list",
+        label: "sessions_list",
+        get description() {
+          return t("tools.desc.sessions_list");
+        },
+      },
+      {
+        id: "sessions_history",
+        label: "sessions_history",
+        get description() {
+          return t("tools.desc.sessions_history");
+        },
+      },
+      {
+        id: "sessions_send",
+        label: "sessions_send",
+        get description() {
+          return t("tools.desc.sessions_send");
+        },
+      },
+      {
+        id: "sessions_spawn",
+        label: "sessions_spawn",
+        get description() {
+          return t("tools.desc.sessions_spawn");
+        },
+      },
+      {
+        id: "session_status",
+        label: "session_status",
+        get description() {
+          return t("tools.desc.session_status");
+        },
+      },
     ],
   },
   {
     id: "ui",
-    label: "UI",
+    get label() {
+      return t("tools.section.ui");
+    },
     tools: [
-      { id: "browser", label: "browser", description: "Control web browser" },
-      { id: "canvas", label: "canvas", description: "Control canvases" },
+      {
+        id: "browser",
+        label: "browser",
+        get description() {
+          return t("tools.desc.browser");
+        },
+      },
+      {
+        id: "canvas",
+        label: "canvas",
+        get description() {
+          return t("tools.desc.canvas");
+        },
+      },
     ],
   },
   {
     id: "messaging",
-    label: "Messaging",
-    tools: [{ id: "message", label: "message", description: "Send messages" }],
+    get label() {
+      return t("tools.section.messaging");
+    },
+    tools: [
+      {
+        id: "message",
+        label: "message",
+        get description() {
+          return t("tools.desc.message");
+        },
+      },
+    ],
   },
   {
     id: "automation",
-    label: "Automation",
+    get label() {
+      return t("tools.section.automation");
+    },
     tools: [
-      { id: "cron", label: "cron", description: "Schedule tasks" },
-      { id: "gateway", label: "gateway", description: "Gateway control" },
+      {
+        id: "cron",
+        label: "cron",
+        get description() {
+          return t("tools.desc.cron");
+        },
+      },
+      {
+        id: "gateway",
+        label: "gateway",
+        get description() {
+          return t("tools.desc.gateway");
+        },
+      },
     ],
   },
   {
     id: "nodes",
-    label: "Nodes",
-    tools: [{ id: "nodes", label: "nodes", description: "Nodes + devices" }],
+    get label() {
+      return t("tools.section.nodes");
+    },
+    tools: [
+      {
+        id: "nodes",
+        label: "nodes",
+        get description() {
+          return t("tools.desc.nodes");
+        },
+      },
+    ],
   },
   {
     id: "agents",
-    label: "Agents",
-    tools: [{ id: "agents_list", label: "agents_list", description: "List agents" }],
+    get label() {
+      return t("tools.section.agents");
+    },
+    tools: [
+      {
+        id: "agents_list",
+        label: "agents_list",
+        get description() {
+          return t("tools.desc.agents_list");
+        },
+      },
+    ],
   },
   {
     id: "media",
-    label: "Media",
-    tools: [{ id: "image", label: "image", description: "Image understanding" }],
+    get label() {
+      return t("tools.section.media");
+    },
+    tools: [
+      {
+        id: "image",
+        label: "image",
+        get description() {
+          return t("tools.desc.image");
+        },
+      },
+    ],
   },
 ];
 
@@ -186,7 +355,7 @@ export function resolveAgentEmoji(
 }
 
 export function agentBadgeText(agentId: string, defaultId: string | null) {
-  return defaultId && agentId === defaultId ? "default" : null;
+  return defaultId && agentId === defaultId ? t("agents.badge.defaultLabel") : null;
 }
 
 export function formatBytes(bytes?: number) {
@@ -255,7 +424,9 @@ export function buildAgentContext(
     model: modelLabel,
     identityName,
     identityEmoji,
-    skillsLabel: skillFilter ? `${skillCount} selected` : "all skills",
+    skillsLabel: skillFilter
+      ? t("agents.skills.selectedCount", skillCount)
+      : t("agents.skills.allSkills"),
     isDefault: Boolean(defaultId && agent.id === defaultId),
   };
 }
@@ -272,14 +443,14 @@ export function resolveModelLabel(model?: unknown): string {
     const primary = record.primary?.trim();
     if (primary) {
       const fallbackCount = Array.isArray(record.fallbacks) ? record.fallbacks.length : 0;
-      return fallbackCount > 0 ? `${primary} (+${fallbackCount} fallback)` : primary;
+      return fallbackCount > 0 ? t("agents.model.fallbackCount", primary, fallbackCount) : primary;
     }
   }
   return "-";
 }
 
 export function normalizeModelValue(label: string): string {
-  const match = label.match(/^(.+) \(\+\d+ fallback\)$/);
+  const match = label.match(/^(.+)\s*[(（]\+\d+.*[)）]$/);
   return match ? match[1] : label;
 }
 
@@ -372,11 +543,11 @@ export function buildModelOptions(
   const options = resolveConfiguredModels(configForm);
   const hasCurrent = current ? options.some((option) => option.value === current) : false;
   if (current && !hasCurrent) {
-    options.unshift({ value: current, label: `Current (${current})` });
+    options.unshift({ value: current, label: t("agents.model.current", current) });
   }
   if (options.length === 0) {
     return html`
-      <option value="" disabled>No configured models</option>
+      <option value="" disabled>${t("agents.model.noConfigured")}</option>
     `;
   }
   return options.map((option) => html`<option value=${option.value}>${option.label}</option>`);

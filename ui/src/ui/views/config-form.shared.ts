@@ -1,4 +1,5 @@
 import type { ConfigUiHints } from "../types.ts";
+import { t } from "../i18n/index.ts";
 
 export type JsonSchema = {
   type?: string | string[];
@@ -83,6 +84,19 @@ export function hintForPath(path: Array<string | number>, hints: ConfigUiHints) 
     }
   }
   return undefined;
+}
+
+/** Translate a hint label or help text via i18n, falling back to the original English. */
+export function translateHintLabel(hintPath: string, fallback: string): string {
+  const key = `config.hint.${hintPath}.label`;
+  const translated = t(key);
+  return translated !== key ? translated : fallback;
+}
+
+export function translateHintHelp(hintPath: string, fallback: string): string {
+  const key = `config.hint.${hintPath}.help`;
+  const translated = t(key);
+  return translated !== key ? translated : fallback;
 }
 
 export function humanize(raw: string) {

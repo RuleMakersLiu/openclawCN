@@ -2,6 +2,7 @@ import { html, nothing } from "lit";
 import type { ChannelAccountSnapshot, TelegramStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
 import { formatRelativeTimestamp } from "../format.ts";
+import { t } from "../i18n/index.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
 
 export function renderTelegramCard(params: {
@@ -27,15 +28,15 @@ export function renderTelegramCard(params: {
         </div>
         <div class="status-list account-card-status">
           <div>
-            <span class="label">Running</span>
+            <span class="label">${t("channels.label.running")}</span>
             <span>${account.running ? "Yes" : "No"}</span>
           </div>
           <div>
-            <span class="label">Configured</span>
+            <span class="label">${t("channels.label.configured")}</span>
             <span>${account.configured ? "Yes" : "No"}</span>
           </div>
           <div>
-            <span class="label">Last inbound</span>
+            <span class="label">${t("channels.label.lastInbound")}</span>
             <span>${account.lastInboundAt ? formatRelativeTimestamp(account.lastInboundAt) : "n/a"}</span>
           </div>
           ${
@@ -54,8 +55,8 @@ export function renderTelegramCard(params: {
 
   return html`
     <div class="card">
-      <div class="card-title">Telegram</div>
-      <div class="card-sub">Bot status and channel configuration.</div>
+      <div class="card-title">${t("channels.telegram.title")}</div>
+      <div class="card-sub">${t("channels.telegram.sub")}</div>
       ${accountCountLabel}
 
       ${
@@ -68,23 +69,23 @@ export function renderTelegramCard(params: {
           : html`
             <div class="status-list" style="margin-top: 16px;">
               <div>
-                <span class="label">Configured</span>
+                <span class="label">${t("channels.label.configured")}</span>
                 <span>${telegram?.configured ? "Yes" : "No"}</span>
               </div>
               <div>
-                <span class="label">Running</span>
+                <span class="label">${t("channels.label.running")}</span>
                 <span>${telegram?.running ? "Yes" : "No"}</span>
               </div>
               <div>
-                <span class="label">Mode</span>
+                <span class="label">${t("channels.label.mode")}</span>
                 <span>${telegram?.mode ?? "n/a"}</span>
               </div>
               <div>
-                <span class="label">Last start</span>
+                <span class="label">${t("channels.label.lastStart")}</span>
                 <span>${telegram?.lastStartAt ? formatRelativeTimestamp(telegram.lastStartAt) : "n/a"}</span>
               </div>
               <div>
-                <span class="label">Last probe</span>
+                <span class="label">${t("channels.label.lastProbe")}</span>
                 <span>${telegram?.lastProbeAt ? formatRelativeTimestamp(telegram.lastProbeAt) : "n/a"}</span>
               </div>
             </div>

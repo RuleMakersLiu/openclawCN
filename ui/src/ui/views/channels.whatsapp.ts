@@ -2,6 +2,7 @@ import { html, nothing } from "lit";
 import type { WhatsAppStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
 import { formatRelativeTimestamp, formatDurationHuman } from "../format.ts";
+import { t } from "../i18n/index.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
 
 export function renderWhatsAppCard(params: {
@@ -13,41 +14,41 @@ export function renderWhatsAppCard(params: {
 
   return html`
     <div class="card">
-      <div class="card-title">WhatsApp</div>
-      <div class="card-sub">Link WhatsApp Web and monitor connection health.</div>
+      <div class="card-title">${t("channels.whatsapp.title")}</div>
+      <div class="card-sub">${t("channels.whatsapp.sub")}</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
+          <span class="label">${t("channels.label.configured")}</span>
           <span>${whatsapp?.configured ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Linked</span>
+          <span class="label">${t("channels.label.linked")}</span>
           <span>${whatsapp?.linked ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Running</span>
+          <span class="label">${t("channels.label.running")}</span>
           <span>${whatsapp?.running ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Connected</span>
+          <span class="label">${t("channels.label.connected")}</span>
           <span>${whatsapp?.connected ? "Yes" : "No"}</span>
         </div>
         <div>
-          <span class="label">Last connect</span>
+          <span class="label">${t("channels.label.lastConnect")}</span>
           <span>
             ${whatsapp?.lastConnectedAt ? formatRelativeTimestamp(whatsapp.lastConnectedAt) : "n/a"}
           </span>
         </div>
         <div>
-          <span class="label">Last message</span>
+          <span class="label">${t("channels.label.lastMessage")}</span>
           <span>
             ${whatsapp?.lastMessageAt ? formatRelativeTimestamp(whatsapp.lastMessageAt) : "n/a"}
           </span>
         </div>
         <div>
-          <span class="label">Auth age</span>
+          <span class="label">${t("channels.label.authAge")}</span>
           <span>
             ${whatsapp?.authAgeMs != null ? formatDurationHuman(whatsapp.authAgeMs) : "n/a"}
           </span>
@@ -84,7 +85,7 @@ export function renderWhatsAppCard(params: {
           ?disabled=${props.whatsappBusy}
           @click=${() => props.onWhatsAppStart(false)}
         >
-          ${props.whatsappBusy ? "Working…" : "Show QR"}
+          ${props.whatsappBusy ? t("channels.whatsapp.working") : t("channels.whatsapp.showQr")}
         </button>
         <button
           class="btn"

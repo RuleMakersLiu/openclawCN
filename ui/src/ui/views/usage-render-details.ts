@@ -1,5 +1,6 @@
 import { html, svg, nothing } from "lit";
 import { formatDurationCompact } from "../../../../src/infra/format-time/format-duration.ts";
+import { t } from "../i18n/index.ts";
 import { parseToolSummary } from "../usage-helpers.ts";
 import { charsToTokens, formatCost, formatTokens } from "./usage-metrics.ts";
 import { renderInsightList } from "./usage-render-overview.ts";
@@ -25,7 +26,7 @@ function renderSessionSummary(session: UsageSessionEntry) {
   const usage = session.usage;
   if (!usage) {
     return html`
-      <div class="muted">No usage data for this session.</div>
+      <div class="muted">${t("usage.detail.noUsage")}</div>
     `;
   }
 
@@ -49,11 +50,11 @@ function renderSessionSummary(session: UsageSessionEntry) {
     usage.toolUsage?.tools.slice(0, 6).map((tool) => ({
       label: tool.name,
       value: `${tool.count}`,
-      sub: "calls",
+      sub: t("usage.detail.calls"),
     })) ?? [];
   const modelItems =
     usage.modelUsage?.slice(0, 6).map((entry) => ({
-      label: entry.model ?? "unknown",
+      label: entry.model ?? t("usage.detail.unknown"),
       value: formatCost(entry.totals.totalCost),
       sub: formatTokens(entry.totals.totalTokens),
     })) ?? [];
@@ -62,29 +63,29 @@ function renderSessionSummary(session: UsageSessionEntry) {
     ${badges.length > 0 ? html`<div class="usage-badges">${badges.map((b) => html`<span class="usage-badge">${b}</span>`)}</div>` : nothing}
     <div class="session-summary-grid">
       <div class="session-summary-card">
-        <div class="session-summary-title">Messages</div>
+        <div class="session-summary-title">${t("usage.detail.messages")}</div>
         <div class="session-summary-value">${usage.messageCounts?.total ?? 0}</div>
-        <div class="session-summary-meta">${usage.messageCounts?.user ?? 0} user · ${usage.messageCounts?.assistant ?? 0} assistant</div>
+        <div class="session-summary-meta">${usage.messageCounts?.user ?? 0} ${t("usage.detail.user")} · ${usage.messageCounts?.assistant ?? 0} ${t("usage.detail.assistant")}</div>
       </div>
       <div class="session-summary-card">
-        <div class="session-summary-title">Tool Calls</div>
+        <div class="session-summary-title">${t("usage.detail.toolCalls")}</div>
         <div class="session-summary-value">${usage.toolUsage?.totalCalls ?? 0}</div>
-        <div class="session-summary-meta">${usage.toolUsage?.uniqueTools ?? 0} tools</div>
+        <div class="session-summary-meta">${usage.toolUsage?.uniqueTools ?? 0} ${t("usage.detail.tools")}</div>
       </div>
       <div class="session-summary-card">
-        <div class="session-summary-title">Errors</div>
+        <div class="session-summary-title">${t("usage.detail.errors")}</div>
         <div class="session-summary-value">${usage.messageCounts?.errors ?? 0}</div>
-        <div class="session-summary-meta">${usage.messageCounts?.toolResults ?? 0} tool results</div>
+        <div class="session-summary-meta">${usage.messageCounts?.toolResults ?? 0} ${t("usage.detail.toolResults")}</div>
       </div>
       <div class="session-summary-card">
-        <div class="session-summary-title">Duration</div>
+        <div class="session-summary-title">${t("usage.detail.duration")}</div>
         <div class="session-summary-value">${formatDurationCompact(usage.durationMs, { spaced: true }) ?? "—"}</div>
         <div class="session-summary-meta">${formatTs(usage.firstActivity)} → ${formatTs(usage.lastActivity)}</div>
       </div>
     </div>
     <div class="usage-insights-grid" style="margin-top: 12px;">
-      ${renderInsightList("Top Tools", toolItems, "No tool calls")}
-      ${renderInsightList("Model Mix", modelItems, "No model data")}
+      ${renderInsightList(t("usage.detail.topTools"), toolItems, t("usage.detail.noToolCalls"))}
+      ${renderInsightList(t("usage.detail.modelMix"), modelItems, t("usage.detail.noModelData"))}
     </div>
   `;
 }
@@ -139,7 +140,7 @@ function renderSessionDetailPanel(
               : nothing
           }
         </div>
-        <button class="session-close-btn" @click=${onClose} title="Close session details">×</button>
+        <button class="session-close-btn" @click=${onClose} title=${t("usage.detail.closeSession")}>×</button>
       </div>
       <div class="session-detail-content">
         ${renderSessionSummary(session)}
@@ -190,14 +191,14 @@ function renderTimeSeriesCompact(
   if (loading) {
     return html`
       <div class="session-timeseries-compact">
-        <div class="muted" style="padding: 20px; text-align: center">Loading...</div>
+        <div class="muted" style="padding: 20px; text-align: center">${t("usage.detail.loading")}</div>
       </div>
     `;
   }
   if (!timeSeries || timeSeries.points.length < 2) {
     return html`
       <div class="session-timeseries-compact">
-        <div class="muted" style="padding: 20px; text-align: center">No timeline data</div>
+        <div class="muted" style="padding: 20px; text-align: center">${t("usage.detail.noTimeline")}</div>
       </div>
     `;
   }
@@ -222,7 +223,7 @@ function renderTimeSeriesCompact(
   if (points.length < 2) {
     return html`
       <div class="session-timeseries-compact">
-        <div class="muted" style="padding: 20px; text-align: center">No data in range</div>
+        <div class="muted" style="padding: 20px; text-align: center">${t("usage.detail.noDataInRange")}</div>
       </div>
     `;
   }
@@ -264,20 +265,20 @@ function renderTimeSeriesCompact(
   return html`
     <div class="session-timeseries-compact">
       <div class="timeseries-header-row">
-        <div class="card-title" style="font-size: 13px;">Usage Over Time</div>
+        <div class="card-title" style="font-size: 13px;">${t("usage.detail.usageOverTime")}</div>
         <div class="timeseries-controls">
           <div class="chart-toggle small">
             <button
               class="toggle-btn ${!isCumulative ? "active" : ""}"
               @click=${() => onModeChange("per-turn")}
             >
-              Per Turn
+              ${t("usage.detail.perTurn")}
             </button>
             <button
               class="toggle-btn ${isCumulative ? "active" : ""}"
               @click=${() => onModeChange("cumulative")}
             >
-              Cumulative
+              ${t("usage.detail.cumulative")}
             </button>
           </div>
           ${
@@ -288,13 +289,13 @@ function renderTimeSeriesCompact(
                       class="toggle-btn ${breakdownMode === "total" ? "active" : ""}"
                       @click=${() => onBreakdownChange("total")}
                     >
-                      Total
+                      ${t("usage.detail.total")}
                     </button>
                     <button
                       class="toggle-btn ${breakdownMode === "by-type" ? "active" : ""}"
                       @click=${() => onBreakdownChange("by-type")}
                     >
-                      By Type
+                      ${t("usage.detail.byType")}
                     </button>
                   </div>
                 `
@@ -336,10 +337,10 @@ function renderTimeSeriesCompact(
             `${formatTokens(val)} tokens`,
           ];
           if (breakdownByType) {
-            tooltipLines.push(`Output ${formatTokens(p.output)}`);
-            tooltipLines.push(`Input ${formatTokens(p.input)}`);
-            tooltipLines.push(`Cache write ${formatTokens(p.cacheWrite)}`);
-            tooltipLines.push(`Cache read ${formatTokens(p.cacheRead)}`);
+            tooltipLines.push(`${t("usage.detail.output")} ${formatTokens(p.output)}`);
+            tooltipLines.push(`${t("usage.detail.input")} ${formatTokens(p.input)}`);
+            tooltipLines.push(`${t("usage.detail.cacheWrite")} ${formatTokens(p.cacheWrite)}`);
+            tooltipLines.push(`${t("usage.detail.cacheRead")} ${formatTokens(p.cacheRead)}`);
           }
           const tooltip = tooltipLines.join(" · ");
           if (!breakdownByType) {
@@ -369,7 +370,7 @@ function renderTimeSeriesCompact(
         breakdownByType
           ? html`
               <div style="margin-top: 8px;">
-                <div class="card-title" style="font-size: 12px; margin-bottom: 6px;">Tokens by Type</div>
+                <div class="card-title" style="font-size: 12px; margin-bottom: 6px;">${t("usage.detail.tokensByType")}</div>
                 <div class="cost-breakdown-bar" style="height: 18px;">
                   <div class="cost-segment output" style="width: ${pct(sumOutput, totalTypeTokens).toFixed(1)}%"></div>
                   <div class="cost-segment input" style="width: ${pct(sumInput, totalTypeTokens).toFixed(1)}%"></div>
@@ -378,19 +379,19 @@ function renderTimeSeriesCompact(
                 </div>
                 <div class="cost-breakdown-legend">
                   <div class="legend-item" title="Assistant output tokens">
-                    <span class="legend-dot output"></span>Output ${formatTokens(sumOutput)}
+                    <span class="legend-dot output"></span>${t("usage.detail.output")} ${formatTokens(sumOutput)}
                   </div>
                   <div class="legend-item" title="User + tool input tokens">
-                    <span class="legend-dot input"></span>Input ${formatTokens(sumInput)}
+                    <span class="legend-dot input"></span>${t("usage.detail.input")} ${formatTokens(sumInput)}
                   </div>
                   <div class="legend-item" title="Tokens written to cache">
-                    <span class="legend-dot cache-write"></span>Cache Write ${formatTokens(sumCacheWrite)}
+                    <span class="legend-dot cache-write"></span>${t("usage.detail.cacheWrite")} ${formatTokens(sumCacheWrite)}
                   </div>
                   <div class="legend-item" title="Tokens read from cache">
-                    <span class="legend-dot cache-read"></span>Cache Read ${formatTokens(sumCacheRead)}
+                    <span class="legend-dot cache-read"></span>${t("usage.detail.cacheRead")} ${formatTokens(sumCacheRead)}
                   </div>
                 </div>
-                <div class="cost-breakdown-total">Total: ${formatTokens(totalTypeTokens)}</div>
+                <div class="cost-breakdown-total">${t("usage.detail.total")}: ${formatTokens(totalTypeTokens)}</div>
               </div>
             `
           : nothing
@@ -408,7 +409,7 @@ function renderContextPanel(
   if (!contextWeight) {
     return html`
       <div class="context-details-panel">
-        <div class="muted" style="padding: 20px; text-align: center">No context data</div>
+        <div class="muted" style="padding: 20px; text-align: center">${t("usage.detail.noContext")}</div>
       </div>
     `;
   }
@@ -426,7 +427,10 @@ function renderContextPanel(
   if (usage && usage.totalTokens > 0) {
     const inputTokens = usage.input + usage.cacheRead;
     if (inputTokens > 0) {
-      contextPct = `~${Math.min((totalContextTokens / inputTokens) * 100, 100).toFixed(0)}% of input`;
+      contextPct = t(
+        "usage.detail.ofInput",
+        Math.min((totalContextTokens / inputTokens) * 100, 100).toFixed(0),
+      );
     }
   }
 
@@ -450,16 +454,16 @@ function renderContextPanel(
   return html`
     <div class="context-details-panel">
       <div class="context-breakdown-header">
-        <div class="card-title" style="font-size: 13px;">System Prompt Breakdown</div>
+        <div class="card-title" style="font-size: 13px;">${t("usage.detail.systemBreakdown")}</div>
         ${
           hasMore
             ? html`<button class="context-expand-btn" @click=${onToggleExpanded}>
-                ${showAll ? "Collapse" : "Expand all"}
+                ${showAll ? t("usage.detail.collapse") : t("usage.detail.expandAll")}
               </button>`
             : nothing
         }
       </div>
-      <p class="context-weight-desc">${contextPct || "Base context per message"}</p>
+      <p class="context-weight-desc">${contextPct || t("usage.detail.baseContext")}</p>
       <div class="context-stacked-bar">
         <div class="context-segment system" style="width: ${pct(systemTokens, totalContextTokens).toFixed(1)}%" title="System: ~${formatTokens(systemTokens)}"></div>
         <div class="context-segment skills" style="width: ${pct(skillsTokens, totalContextTokens).toFixed(1)}%" title="Skills: ~${formatTokens(skillsTokens)}"></div>
@@ -472,7 +476,7 @@ function renderContextPanel(
         <span class="legend-item"><span class="legend-dot tools"></span>Tools ~${formatTokens(toolsTokens)}</span>
         <span class="legend-item"><span class="legend-dot files"></span>Files ~${formatTokens(filesTokens)}</span>
       </div>
-      <div class="context-total">Total: ~${formatTokens(totalContextTokens)}</div>
+      <div class="context-total">${t("usage.detail.total")}: ~${formatTokens(totalContextTokens)}</div>
       <div class="context-breakdown-grid">
         ${
           skillsList.length > 0
@@ -480,7 +484,7 @@ function renderContextPanel(
                 const more = skillsList.length - skillsTop.length;
                 return html`
                   <div class="context-breakdown-card">
-                    <div class="context-breakdown-title">Skills (${skillsList.length})</div>
+                    <div class="context-breakdown-title">${t("usage.detail.skills", String(skillsList.length))}</div>
                     <div class="context-breakdown-list">
                       ${skillsTop.map(
                         (s) => html`
@@ -493,7 +497,7 @@ function renderContextPanel(
                     </div>
                     ${
                       more > 0
-                        ? html`<div class="context-breakdown-more">+${more} more</div>`
+                        ? html`<div class="context-breakdown-more">${t("usage.detail.more", String(more))}</div>`
                         : nothing
                     }
                   </div>
@@ -507,7 +511,7 @@ function renderContextPanel(
                 const more = toolsList.length - toolsTop.length;
                 return html`
                   <div class="context-breakdown-card">
-                    <div class="context-breakdown-title">Tools (${toolsList.length})</div>
+                    <div class="context-breakdown-title">${t("usage.detail.toolsCount", String(toolsList.length))}</div>
                     <div class="context-breakdown-list">
                       ${toolsTop.map(
                         (t) => html`
@@ -520,7 +524,7 @@ function renderContextPanel(
                     </div>
                     ${
                       more > 0
-                        ? html`<div class="context-breakdown-more">+${more} more</div>`
+                        ? html`<div class="context-breakdown-more">${t("usage.detail.more", String(more))}</div>`
                         : nothing
                     }
                   </div>
@@ -534,7 +538,7 @@ function renderContextPanel(
                 const more = filesList.length - filesTop.length;
                 return html`
                   <div class="context-breakdown-card">
-                    <div class="context-breakdown-title">Files (${filesList.length})</div>
+                    <div class="context-breakdown-title">${t("usage.detail.filesCount", String(filesList.length))}</div>
                     <div class="context-breakdown-list">
                       ${filesTop.map(
                         (f) => html`
@@ -547,7 +551,7 @@ function renderContextPanel(
                     </div>
                     ${
                       more > 0
-                        ? html`<div class="context-breakdown-more">+${more} more</div>`
+                        ? html`<div class="context-breakdown-more">${t("usage.detail.more", String(more))}</div>`
                         : nothing
                     }
                   </div>
@@ -580,16 +584,16 @@ function renderSessionLogsCompact(
   if (loading) {
     return html`
       <div class="session-logs-compact">
-        <div class="session-logs-header">Conversation</div>
-        <div class="muted" style="padding: 20px; text-align: center">Loading...</div>
+        <div class="session-logs-header">${t("usage.detail.conversation")}</div>
+        <div class="muted" style="padding: 20px; text-align: center">${t("usage.detail.loading")}</div>
       </div>
     `;
   }
   if (!logs || logs.length === 0) {
     return html`
       <div class="session-logs-compact">
-        <div class="session-logs-header">Conversation</div>
-        <div class="muted" style="padding: 20px; text-align: center">No messages</div>
+        <div class="session-logs-header">${t("usage.detail.conversation")}</div>
+        <div class="muted" style="padding: 20px; text-align: center">${t("usage.detail.noMessages")}</div>
       </div>
     `;
   }
@@ -635,9 +639,9 @@ function renderSessionLogsCompact(
   return html`
     <div class="session-logs-compact">
       <div class="session-logs-header">
-        <span>Conversation <span style="font-weight: normal; color: var(--text-muted);">(${displayedCount} messages)</span></span>
+        <span>${t("usage.detail.conversation")} <span style="font-weight: normal; color: var(--text-muted);">(${displayedCount} ${t("usage.detail.messages").toLowerCase()})</span></span>
         <button class="btn btn-sm usage-action-btn usage-secondary-btn" @click=${onToggleExpandedAll}>
-          ${expandedAll ? "Collapse All" : "Expand All"}
+          ${expandedAll ? t("usage.detail.collapseAll") : t("usage.detail.expandAllBtn")}
         </button>
       </div>
       <div class="usage-filters-inline" style="margin: 10px 12px;">
@@ -651,10 +655,10 @@ function renderSessionLogsCompact(
               ),
             )}
         >
-          <option value="user" ?selected=${roleSelected.has("user")}>User</option>
-          <option value="assistant" ?selected=${roleSelected.has("assistant")}>Assistant</option>
-          <option value="tool" ?selected=${roleSelected.has("tool")}>Tool</option>
-          <option value="toolResult" ?selected=${roleSelected.has("toolResult")}>Tool result</option>
+          <option value="user" ?selected=${roleSelected.has("user")}>${t("usage.detail.roleUser")}</option>
+          <option value="assistant" ?selected=${roleSelected.has("assistant")}>${t("usage.detail.roleAssistant")}</option>
+          <option value="tool" ?selected=${roleSelected.has("tool")}>${t("usage.detail.roleTool")}</option>
+          <option value="toolResult" ?selected=${roleSelected.has("toolResult")}>${t("usage.detail.roleToolResult")}</option>
         </select>
         <select
           multiple
@@ -678,16 +682,16 @@ function renderSessionLogsCompact(
             @change=${(event: Event) =>
               onFilterHasToolsChange((event.target as HTMLInputElement).checked)}
           />
-          Has tools
+          ${t("usage.detail.hasTools")}
         </label>
         <input
           type="text"
-          placeholder="Search conversation"
+          placeholder=${t("usage.detail.searchConversation")}
           .value=${filters.query}
           @input=${(event: Event) => onFilterQueryChange((event.target as HTMLInputElement).value)}
         />
         <button class="btn btn-sm usage-action-btn usage-secondary-btn" @click=${onFilterClear}>
-          Clear
+          ${t("usage.query.clear")}
         </button>
       </div>
       <div class="session-logs-list">
@@ -695,7 +699,11 @@ function renderSessionLogsCompact(
           const { log, toolInfo, cleanContent } = entry;
           const roleClass = log.role === "user" ? "user" : "assistant";
           const roleLabel =
-            log.role === "user" ? "You" : log.role === "assistant" ? "Assistant" : "Tool";
+            log.role === "user"
+              ? t("usage.detail.roleUser")
+              : log.role === "assistant"
+                ? t("usage.detail.roleAssistant")
+                : t("usage.detail.roleTool");
           return html`
           <div class="session-log-entry ${roleClass}">
             <div class="session-log-meta">
@@ -726,7 +734,7 @@ function renderSessionLogsCompact(
         ${
           filteredEntries.length === 0
             ? html`
-                <div class="muted" style="padding: 12px">No messages match the filters.</div>
+                <div class="muted" style="padding: 12px">${t("usage.detail.noMatch")}</div>
               `
             : nothing
         }

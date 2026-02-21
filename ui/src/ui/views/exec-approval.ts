@@ -1,5 +1,6 @@
 import { html, nothing } from "lit";
 import type { AppViewState } from "../app-view-state.ts";
+import { t } from "../i18n/index.ts";
 
 function formatRemaining(ms: number): string {
   const remaining = Math.max(0, ms);
@@ -36,24 +37,24 @@ export function renderExecApprovalPrompt(state: AppViewState) {
       <div class="exec-approval-card">
         <div class="exec-approval-header">
           <div>
-            <div class="exec-approval-title">Exec approval needed</div>
+            <div class="exec-approval-title">${t("exec.approval.title")}</div>
             <div class="exec-approval-sub">${remaining}</div>
           </div>
           ${
             queueCount > 1
-              ? html`<div class="exec-approval-queue">${queueCount} pending</div>`
+              ? html`<div class="exec-approval-queue">${t("exec.approval.pending", queueCount)}</div>`
               : nothing
           }
         </div>
         <div class="exec-approval-command mono">${request.command}</div>
         <div class="exec-approval-meta">
-          ${renderMetaRow("Host", request.host)}
-          ${renderMetaRow("Agent", request.agentId)}
-          ${renderMetaRow("Session", request.sessionKey)}
-          ${renderMetaRow("CWD", request.cwd)}
-          ${renderMetaRow("Resolved", request.resolvedPath)}
-          ${renderMetaRow("Security", request.security)}
-          ${renderMetaRow("Ask", request.ask)}
+          ${renderMetaRow(t("exec.host"), request.host)}
+          ${renderMetaRow(t("exec.agent"), request.agentId)}
+          ${renderMetaRow(t("exec.session"), request.sessionKey)}
+          ${renderMetaRow(t("exec.cwd"), request.cwd)}
+          ${renderMetaRow(t("exec.resolved"), request.resolvedPath)}
+          ${renderMetaRow(t("exec.security"), request.security)}
+          ${renderMetaRow(t("exec.ask"), request.ask)}
         </div>
         ${
           state.execApprovalError
